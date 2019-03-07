@@ -16,7 +16,6 @@ const Burger = ({ ingredients }) => {
       // map over every array decleared space, the variable name does not matter
       // so we use _, but the index is for key value to make it unique.
       return ingredientsKeys.map((_, index) => {
-        console.log('inside:', index);
         // unique key eg: meat0 or salad3.
         // will map every declared space, aim is to run the numbers of BurgerIngredient Component
         return <BurgerIngredient key={ingKey + index} type={ingKey} />;
@@ -31,7 +30,6 @@ const Burger = ({ ingredients }) => {
     transformIngredients = <p>Add some ingredient</p>;
   }
 
-  console.log(transformIngredients);
   return (
     <div className={classes.Burger}>
       <BurgerIngredient type={'bread-top'} />

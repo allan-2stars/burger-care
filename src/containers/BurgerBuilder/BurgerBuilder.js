@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 
 const INGREDIENT_PRICE = {
-  salad: 0.5,
-  bacon: 1.2,
-  cheese: 0.8,
-  meat: 1.5
+  salad: 0.55,
+  bacon: 1.25,
+  cheese: 0.85,
+  meat: 1.6
 };
 
 class BurgerBuilder extends Component {
@@ -18,7 +20,20 @@ class BurgerBuilder extends Component {
       cheese: 0,
       meat: 0
     },
-    totalPrice: 3
+    totalPrice: 3,
+    purchaseable: false
+  };
+
+  updatePurchaseState = ingredients => {
+    // use below commented method will not get the correct state
+    // use above, transfer the parrameter from updated ingredient
+    // const ingredients = { ...this.state.ingredients };
+
+    const sum = Object.keys(ingredients)
+      .map(ingredientKey => ingredients[ingredientKey])
+      .reduce((acc, value) => acc + value, 0);
+    // if sum > 0 so we can let use to purchase
+    this.setState({ purchaseable: sum > 0 });
   };
 
   // add ingredient
@@ -32,8 +47,8 @@ class BurgerBuilder extends Component {
     const priceAddition = INGREDIENT_PRICE[type];
     const oldPrice = this.state.totalPrice;
     const newPrice = oldPrice + priceAddition;
-
     this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
+    this.updatePurchaseState(updatedIngredients);
   };
 
   // remove ingredient
@@ -48,8 +63,8 @@ class BurgerBuilder extends Component {
       const priceDeduction = INGREDIENT_PRICE[type];
       const oldPrice = this.state.totalPrice;
       const newPrice = oldPrice - priceDeduction;
-
       this.setState({ totalPrice: newPrice, ingredients: updatedIngredients });
+      this.updatePurchaseState(updatedIngredients);
     }
   };
 
@@ -69,7 +84,12 @@ class BurgerBuilder extends Component {
           ingredientAdd={this.addIngredientHandler}
           ingredientRemove={this.removeIngredientHandler}
           disabled={disableInfo}
+          price={this.state.totalPrice}
+          purchaseable={this.state.purchaseable}
         />
+        <Modal>
+          <OrderSummary ingredients={this.state.ingredients} />
+        </Modal>
       </React.Fragment>
     );
   }

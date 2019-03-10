@@ -18,18 +18,23 @@ const INGREDIENT_PRICE = {
 
 class BurgerBuilder extends Component {
   state = {
-    ingredients: {
-      salad: 0,
-      bacon: 0,
-      cheese: 0,
-      meat: 0
-    },
+    ingredients: null,
     totalPrice: 3,
     purchaseable: false,
     purchasing: false,
-    loading: false
+    loading: false,
+    error: false
   };
 
+  // get ingredients data
+  componentDidMount() {
+    axios
+      .get('https://react-my-burger-a4ed4.firebaseio.com/ingredients.json')
+      .then(res => this.setState({ ingredients: res.data }))
+      .catch(err => {
+        this.setState({ error: true });
+      });
+  }
   updatePurchaseState = ingredients => {
     // use below commented method will not get the correct state
     // use above, transfer the parrameter from updated ingredient
@@ -113,17 +118,41 @@ class BurgerBuilder extends Component {
       // eg, disable[salad] = 0, then disableInfo[salad] = true
       disableInfo[key] = disableInfo[key] <= 0;
     }
-    let orderSummary = (
-      <OrderSummary
-        ingredients={this.state.ingredients}
-        purchaseCancelled={this.purchaseCancelHandler}
-        purchaseContinued={this.purchaseContinueHandler}
-        price={this.state.totalPrice}
-      />
+    let orderSummary = null;
+    // save burger component into a variable and use spinner
+    // before the burger info loaded from DB
+    let burger = this.state.error ? (
+      <p>Ingredients cannot be loaded!</p>
+    ) : (
+      <Spinner />
     );
+    if (this.state.ingredients) {
+      burger = (
+        <React.Fragment>
+          <Burger ingredients={this.state.ingredients} />
+          <BuildControls
+            ingredientAdd={this.addIngredientHandler}
+            ingredientRemove={this.removeIngredientHandler}
+            disabled={disableInfo}
+            price={this.state.totalPrice}
+            purchaseable={this.state.purchaseable}
+            ordered={this.purchaseHandler}
+          />
+        </React.Fragment>
+      );
+      orderSummary = (
+        <OrderSummary
+          ingredients={this.state.ingredients}
+          purchaseCancelled={this.purchaseCancelHandler}
+          purchaseContinued={this.purchaseContinueHandler}
+          price={this.state.totalPrice}
+        />
+      );
+    }
     if (this.state.loading) {
       orderSummary = <Spinner />;
     }
+
     return (
       <React.Fragment>
         <Modal
@@ -132,15 +161,7 @@ class BurgerBuilder extends Component {
         >
           {orderSummary}
         </Modal>
-        <Burger ingredients={this.state.ingredients} />
-        <BuildControls
-          ingredientAdd={this.addIngredientHandler}
-          ingredientRemove={this.removeIngredientHandler}
-          disabled={disableInfo}
-          price={this.state.totalPrice}
-          purchaseable={this.state.purchaseable}
-          ordered={this.purchaseHandler}
-        />
+        {burger}
       </React.Fragment>
     );
   }

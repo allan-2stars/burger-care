@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from '../../axios-orders';
-
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
@@ -22,7 +21,6 @@ class BurgerBuilder extends Component {
     totalPrice: 3,
     purchaseable: false,
     purchasing: false,
-    loading: false,
     error: false
   };
 
@@ -91,22 +89,6 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    // set loading to true for loading
-    // this.setState({ loading: true });
-    // const orderData = {
-    //   ingredient: this.state.ingredients,
-    //   // calculate price on server side as well
-    //   price: this.state.totalPrice,
-    //   customer: {
-    //     name: 'Allan',
-    //     address: { street: 'u street', code: 2000 },
-    //     email: 'allan@a.com'
-    //   }
-    // };
-    // axios
-    //   .post('/order.json', orderData)
-    //   .then(res => this.setState({ loading: false, purchasing: false }))
-    //   .catch(err => this.setState({ loading: false, purchasing: false }));
     const queryParams = [];
     for (let i in this.state.ingredients) {
       queryParams.push(

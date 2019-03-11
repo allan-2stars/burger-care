@@ -12,7 +12,7 @@ const checkoutSummary = ({
   return (
     <div className={classes.CheckoutSummary}>
       <h1>good taste</h1>
-      <div style={{ width: '100%', margin: 'auto' }}>
+      <div style={{ width: '100%', margin: 'auto', scroll: 'hidden' }}>
         <Burger ingredients={ingredients} />
       </div>
       <Button btnType='Danger' clicked={checkoutCancelled}>

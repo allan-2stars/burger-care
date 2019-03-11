@@ -11,9 +11,9 @@ import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 const INGREDIENT_PRICE = {
   salad: 0.55,
-  bacon: 1.25,
+  bacon: 0.35,
   cheese: 0.85,
-  meat: 1.6
+  meat: 0.62
 };
 
 class BurgerBuilder extends Component {
@@ -92,21 +92,32 @@ class BurgerBuilder extends Component {
 
   purchaseContinueHandler = () => {
     // set loading to true for loading
-    this.setState({ loading: true });
-    const orderData = {
-      ingredient: this.state.ingredients,
-      // calculate price on server side as well
-      price: this.state.totalPrice,
-      customer: {
-        name: 'Allan',
-        address: { street: 'u street', code: 2000 },
-        email: 'allan@a.com'
-      }
-    };
-    axios
-      .post('/order.json', orderData)
-      .then(res => this.setState({ loading: false, purchasing: false }))
-      .catch(err => this.setState({ loading: false, purchasing: false }));
+    // this.setState({ loading: true });
+    // const orderData = {
+    //   ingredient: this.state.ingredients,
+    //   // calculate price on server side as well
+    //   price: this.state.totalPrice,
+    //   customer: {
+    //     name: 'Allan',
+    //     address: { street: 'u street', code: 2000 },
+    //     email: 'allan@a.com'
+    //   }
+    // };
+    // axios
+    //   .post('/order.json', orderData)
+    //   .then(res => this.setState({ loading: false, purchasing: false }))
+    //   .catch(err => this.setState({ loading: false, purchasing: false }));
+    const queryParams = [];
+    for (let i in this.state.ingredients) {
+      queryParams.push(
+        encodeURIComponent(i) +
+          '=' +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+    const queryString = queryParams.join('&');
+    // history.push method can have options to config
+    this.props.history.push({ pathname: '/checkout', search: queryString });
   };
 
   render() {

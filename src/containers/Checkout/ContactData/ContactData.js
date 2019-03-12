@@ -17,9 +17,9 @@ class ContactData extends Component {
     //set loading to true for loading
     this.setState({ loading: true });
     const orderData = {
-      ingredient: this.state.ingredients,
+      ingredients: this.props.ingredients,
       // calculate price on server side as well
-      price: this.state.totalPrice,
+      price: this.props.totalPrice,
       customer: {
         name: 'Allan',
         address: { street: 'u street', code: 2000 },
@@ -27,7 +27,7 @@ class ContactData extends Component {
       }
     };
     axios
-      .post('/order.json', orderData)
+      .post('/orders.json', orderData)
       .then(res => {
         this.setState({ loading: false });
         this.props.history.push('/');
@@ -52,7 +52,7 @@ class ContactData extends Component {
 
     return (
       <div className={classes.ContactData}>
-        <h4>Enter your contact dta</h4>
+        <h4>Enter your contact data</h4>
         {form}
       </div>
     );

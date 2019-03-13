@@ -60,10 +60,15 @@ class ContactData extends Component {
     event.preventDefault();
     //set loading to true for loading
     this.setState({ loading: true });
+    const formData = {};
+    for (let formElementId in this.state.orderForm) {
+      formData[formElementId] = this.state.orderForm[formElementId].value;
+    }
     const orderData = {
       ingredients: this.props.ingredients,
       // calculate price on server side as well
-      price: this.props.totalPrice
+      price: this.props.totalPrice,
+      orderInfo: formData
     };
     axios
       .post('/orders.json', orderData)
@@ -80,7 +85,7 @@ class ContactData extends Component {
       formElementsArray.push({ id: key, config: this.state.orderForm[key] });
     }
     let form = (
-      <form>
+      <form submit={this.orderHandler}>
         {formElementsArray.map(formEl => (
           <Input
             elementType={formEl.config.elementType}
